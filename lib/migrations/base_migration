@@ -1,0 +1,26 @@
+CREATE TABLE IF NOT EXISTS queries (
+	id INTEGER PRIMARY KEY AUTOINCREMENT,
+	query TEXT NOT NULL UNIQUE,
+	last_used INTEGER,
+	created INTEGER
+);
+
+CREATE TABLE IF NOT EXISTS torrents (
+	id INTEGER PRIMARY KEY,
+	name TEXT,
+	magnet TEXT,
+	category TEXT,
+	size TEXT,
+	uploaded INTEGER,
+	created integer
+);
+
+CREATE TABLE IF NOT EXISTS query2torrent (
+	query_id INTEGER,
+	torrent_id INTEGER,
+	FOREIGN KEY (query_id)
+		REFERENCES queries (id) ON DELETE CASCADE
+	FOREIGN KEY (torrent_id)
+		REFERENCES torrents (id)
+	UNIQUE (query_id, torrent_id) ON CONFLICT ROLLBACK
+);

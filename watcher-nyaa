@@ -1,0 +1,30 @@
+#!/usr/bin/env python3
+from urllib import parse
+from lib.torrent_parser import run_parsing
+
+
+class NyaaConfig:
+    BASE_URL = "https://nyaa.si"
+    ROW_SELECTOR = "//tbody/tr"
+    NEXT_PAGE_SELECTOR = "//*[@class='next']/a/@href"
+
+    DATA_SELECTOR_CATEGORY = \
+        "td//a/img[@class='category-icon']/@alt"
+    DATA_SELECTOR_NAME = \
+        "td//a[contains(@href, 'view') and not(contains(@href, 'comments'))]/text()"
+    DATA_SELECTOR_SIZE = \
+        "(td//a[contains(@href, 'magnet')]/ancestor::td/following-sibling::td)[1]/text()"
+    DATA_SELECTOR_ID = \
+        "td//a[contains(@href, 'view') and not(contains(@href, 'comments'))]/@href"
+    DATA_SELECTOR_MAGNET = \
+        "td//a[contains(@href, 'magnet')]/@href"
+    DATA_SELECTOR_UPLOADED = \
+        "td/@data-timestamp"
+
+    @staticmethod
+    def first_page(query):
+        return "https://nyaa.si/?f=0&c=0_0&q=" + parse.quote(query, safe='')
+
+
+if __name__ == '__main__':
+    run_parsing(NyaaConfig())
