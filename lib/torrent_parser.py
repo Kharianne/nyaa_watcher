@@ -127,27 +127,29 @@ def run_parsing(config):
 
     db = Database(db_path)
     if 'QUERY' in args:
-        # Scrape and download
-        down = Downloader()
-        parser = Parser(config)
-        d = Driver(config, args.QUERY, down, parser, db)
-        torrents, headers = d.run()
-
-        # Format and print
-        fm = lib.utils.Formatter(headers, torrents)
-        if args.columns:
-            fm.filter_data(args.columns.split(','))
-        fm.format_data(args.output)
-        fm.print_data()
-
-    elif 'PRUNE' in args:
-        # Prune DB
-        db.connect()
-        db.prune(args.PRUNE, time.time())
-
         try:
-            pass
+            # Scrape and download
+            down = Downloader()
+            parser = Parser(config)
+            d = Driver(config, args.QUERY, down, parser, db)
+            torrents, headers = d.run()
 
+            # Format and print
+            fm = lib.utils.Formatter(headers, torrents)
+            if args.columns:
+                fm.filter_data(args.columns.split(','))
+            fm.format_data(args.output)
+            fm.print_data()
         except:
             traceback.print_exc()
             exit(1)
+
+    elif 'PRUNE' in args:
+        try:
+            # Prune DB
+            db.connect()
+            db.prune(args.PRUNE, time.time())
+        except:
+            traceback.print_exc()
+            exit(1)
+
