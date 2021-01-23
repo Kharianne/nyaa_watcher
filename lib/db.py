@@ -93,11 +93,11 @@ class Database:
         diff = now - secs
 
         self.cur.execute("""
-            SELECT * FROM queries
+            SELECT query FROM queries
             WHERE queries.last_used <= ?
         """, (diff,))
-
         queries_to_delete = self.cur.fetchall()
+
         if queries_to_delete:
             # Delete from query table; ON CASCADE deletes from query2torrent table
             self.cur.execute("""
