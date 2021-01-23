@@ -1,5 +1,6 @@
 import json
 import sys
+import struct
 
 
 class Formatter:
@@ -10,7 +11,7 @@ class Formatter:
         self.formatted_data = list()
 
     def print_data(self):
-        if isinstance(self.formatted_data[0], bytes):
+        if isinstance(self.formatted_data[0], bytearray):
             for data in self.formatted_data:
                 sys.stdout.buffer.write(data)
         elif isinstance(self.formatted_data[0], str):
@@ -53,4 +54,10 @@ class Formatter:
             self.formatted_data.append('\t'.join(map(str, row)))
 
     def _binary_form(self):
-        self.formatted_data.append("foo".encode('utf8'))
+        for row in [self.headers] + self.data:
+            line = bytearray()
+            for field in row:
+                header_enc = str(field).encode('utf8')
+                buf = struct.pack('>I', len(header_enc))
+                line = bytearray(line + buf + header_enc)
+            self.formatted_data.append(line + bytearray([0x0a]))
